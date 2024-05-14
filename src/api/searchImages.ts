@@ -1,6 +1,20 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { UnsplashImage } from "../components/App/App.types";
-async function searchImages(query: string, pageNum: number): Promise<void> {
+
+interface SearchImagesResponse {
+  results: UnsplashImage[];
+  client_id: string;
+  query: string;
+  orientation: string;
+  pageNum: number;
+  per_page: number;
+  total_pages: number;
+}
+
+async function searchImages(
+  query: string,
+  pageNum: number
+): Promise<SearchImagesResponse> {
   try {
     const API_KEY: string = "X0sJ3fvNEVUnxb5PR6m8WyW7rOdzAD8SMCSzxAiJtgY";
     const params: UnsplashImage = {
@@ -11,9 +25,9 @@ async function searchImages(query: string, pageNum: number): Promise<void> {
       per_page: 12,
     };
 
-    const response: AxiosResponse<any> = await axios.get<
+    const response: AxiosResponse<SearchImagesResponse> = await axios.get<
       UnsplashImage,
-      AxiosResponse<any>
+      AxiosResponse<SearchImagesResponse>
     >(`https://api.unsplash.com/search/photos/`, {
       params: params,
       headers: {

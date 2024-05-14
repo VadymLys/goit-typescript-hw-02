@@ -7,7 +7,7 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageModal from "../ImageModal/ImageModal";
 import Loader from "../Loader/Loader";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
-import { Image } from "./App.types";
+import { Image, UnsplashImage } from "./App.types";
 
 const App: FC = () => {
   const [images, setImages] = useState<Image[]>([]);
@@ -37,7 +37,7 @@ const App: FC = () => {
       try {
         const data = await searchImages(query, pageNum);
 
-        const normalizeData: Image = data.results.map(
+        const normalizeData = data.results.map(
           ({ description, id, urls }: any) => {
             return {
               alt: description,
