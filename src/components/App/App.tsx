@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import "modern-normalize";
 import { searchImages } from "../../api/searchImages";
 import SearchBar from "../SearchBar/SearchBar";
@@ -7,18 +7,19 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageModal from "../ImageModal/ImageModal";
 import Loader from "../Loader/Loader";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import { Image } from "./App.types";
 
-const App = () => {
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [pageNum, setPageNum] = useState(1);
-  const [query, setQuery] = useState("");
-  const [hasMoreImages, setHasMoreImages] = useState(false);
-  const [clickImage, setClickImage] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+const App: FC = () => {
+  const [images, setImages] = useState<Image[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
+  const [hasMoreImages, setHasMoreImages] = useState<boolean>(false);
+  const [clickImage, setClickImage] = useState<Image | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  async function handleSearch(query) {
+  async function handleSearch(query: string): Promise<void> {
     setLoading(true);
 
     setError(false);
@@ -36,15 +37,16 @@ const App = () => {
       try {
         const data = await searchImages(query, pageNum);
 
-        const normalizeData = data.results.map(({ description, id, urls }) => {
-          return {
-            alt: description,
-            id,
-            small: urls.small,
-            regular: urls.regular,
-          };
-        });
-
+        const normalizeData: Image = data.results.map(
+          ({ description, id, urls }: any) => {
+            return {
+              alt: description,
+              id,
+              small: urls.small,
+              regular: urls.regular,
+            };
+          }
+        );
         setImages((prevImages) => [...prevImages, ...normalizeData]);
 
         if (data.results.length === 0) {
@@ -68,12 +70,12 @@ const App = () => {
     setPageNum(pageNum + 1);
   };
 
-  const open = (image) => {
+  const open = (image: Image): void => {
     setIsOpen(true);
     setClickImage(image);
   };
 
-  const close = () => {
+  const close = (): void => {
     setIsOpen(false);
     setClickImage(null);
   };
@@ -84,9 +86,7 @@ const App = () => {
       {loading && <Loader />}
       {error && <ErrorMessage />}
       {images.length > 0 && <ImageGallery items={images} onClick={open} />}
-      {hasMoreImages && images.length > 0 && (
-        <LoadMoreBtn onClick={loadMore} page={pageNum} items={images} />
-      )}
+      {hasMoreImages && images.length > 0 && <LoadMoreBtn onClick={loadMore} />}
       {clickImage && (
         <ImageModal images={clickImage} open={isOpen} close={close} />
       )}

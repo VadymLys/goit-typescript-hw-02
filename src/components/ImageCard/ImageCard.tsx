@@ -1,4 +1,12 @@
-const ImageCard = ({ alt, imageUrl, onClick }) => {
+import { FC } from "react";
+
+interface ImageCardProps {
+  alt: string;
+  imageUrl: string;
+  onClick: () => void;
+}
+
+const ImageCard: FC<ImageCardProps> = ({ alt, imageUrl, onClick }) => {
   return (
     <li>
       <div>
